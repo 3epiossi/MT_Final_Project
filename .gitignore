@@ -1,1 +1,6 @@
 *.png
+test
+__pycache__
+.env
+static/uploads/*
+static/results/*
