@@ -2,6 +2,9 @@ import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 from module.radian_background import create_image
+import requests
+from io import BytesIO
+
 
 YELLOW_BGR = [132, 227, 255]  # BGR 格式的黃色
 # YELLOW_BGR = [255, 255, 255]  # BGR 格式的黃色
@@ -13,9 +16,20 @@ BACKGROUND_WIDTH = 1860
 BACKGROUND_HEIGHT = 800
 PERSON_TOP = 50
 PERSON_HEIGHT = 700
-
 PADDING = 30
 
+SC_FONT_URL = "https://github.com/notofonts/noto-cjk/raw/refs/heads/main/Serif/OTF/SimplifiedChinese/NotoSerifCJKsc-Medium.otf"
+FONT_SIZE = 150
+
+def load_font_from_url(url, font_size=60):
+    """
+    從遠端 URL 下載字型，並以指定字體大小載入為 Pillow 的字型物件 (ImageFont)。
+    """
+    response = requests.get(url)
+    response.raise_for_status()  # 若下載失敗會丟出異常
+    font_data = BytesIO(response.content)
+    font = ImageFont.truetype(font_data, font_size)
+    return font
 
 def create_yellow_background(width=IMAGE_WIDTH, height=IMAGE_HEIGHT):
     """
@@ -103,14 +117,14 @@ def overlay_yellow_background(image):
 
     return new_bg
 
-def overlay_text(image, text=""):
+def overlay_text(image, font, text=""):
     """
     使用 PIL 來在圖片上繪製中文文字。
     假設 image 為 1920x1080 大小的 BGR numpy 陣列。
     我們要在 y=830~1080 區域內，將文字上下左右置中顯示。
     """
-    region_top = 830
-    region_bottom = 1080
+    region_top = PADDING + BACKGROUND_HEIGHT
+    region_bottom = IMAGE_HEIGHT - PADDING
     region_center_y = (region_top + region_bottom) // 2  # 955
 
     # 1) 先將 OpenCV 影像 (BGR) → PIL Image (RGB)
@@ -119,28 +133,22 @@ def overlay_text(image, text=""):
     # 2) 取得繪圖物件
     draw = ImageDraw.Draw(image_pil)
 
-    # 3) 載入字型檔 (請確定電腦上有這個字型檔，路徑要正確)
-    #    例如使用 NotoSansCJK 或思源黑體 / 微軟正黑體等
-    font_path = "simsun.ttc"  # 依你電腦實際字型檔而定
-    font_size = 150  # 字體大小可自行調整
-    font = ImageFont.truetype(font_path, font_size)
-
-    # 4) 設定顏色 (RGB)
+    # 3) 設定顏色 (RGB)
     text_color = (255, 0, 0)  # 紅色 (注意是 PIL 的 RGB)
 
-    # 5) 計算文字繪製位置，實現左右、上下置中
+    # 4) 計算文字繪製位置，實現左右、上下置中
     text_width, text_height = draw.textsize(text, font=font)
     text_x = (image.shape[1] - text_width) // 2
     # 記得 PIL 繪製文字的 (x,y) 是文字左上角，不是左下角
     text_y = (region_center_y - text_height // 2)
 
-    # 6) 開始繪製文字
+    # 5) 開始繪製文字
     draw.text(
         (text_x, text_y), 
         text, 
         font=font, 
         fill=text_color,
-        stroke_width=2,               # 外框(描邊)寬度，可自行調整
+        stroke_width=1,               # 外框(描邊)寬度，可自行調整
         stroke_fill=text_color        # 若要整體更粗，就用同色
     )
 
@@ -150,9 +158,10 @@ def overlay_text(image, text=""):
     return image
 
 def overlay_person(image, name):
+    font = load_font_from_url(SC_FONT_URL, font_size=FONT_SIZE)
     image = overlay_radian_background(image, 5)
     image = overlay_yellow_background(image)
-    image = overlay_text(image, text=f'{name}是我们心中的红太阳')
+    image = overlay_text(image, font, text=f'{name}是我们心中的红太阳')
     return image
 
 if __name__ == '__main__':
