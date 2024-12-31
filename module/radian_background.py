@@ -42,9 +42,9 @@ def create_image(width=800, height=800, red_white_gamma_index=2.6, center_white_
     
     return Image.fromarray(output)
 
-def save_image(image_path="background.png", width=800, height=800, red_white_gamma_index=2.6, center_white_gamma_index=0.9):
+def save_image(image_path="radian_background.png", width=800, height=800, red_white_gamma_index=2.6, center_white_gamma_index=0.9):
     image = create_image(width, height, red_white_gamma_index, center_white_gamma_index)
     image.save(image_path)
 
 if __name__ == "__main__":
-    save_image("background.png", 900, 600, 2.6, 0.9)
+    save_image("radian_background.png", 900, 600, 2.6, 0.9)

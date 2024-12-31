@@ -17,10 +17,10 @@ def index():
 @app.route('/process', methods=['POST'])
 def process():
     file = request.files.get('image')
+    user_name = request.form.get('name')  # 接收 "name" 欄位
 
     if not file:
         return jsonify({"error": "未收到圖片檔案！"}), 400
-
     if not file.content_type.startswith('image/'):
         return jsonify({"error": "上傳的檔案不是圖片格式！"}), 400
 
@@ -32,8 +32,9 @@ def process():
         # 開啟圖片並轉為 NumPy 陣列
         image = cv2.imread(input_path, cv2.IMREAD_UNCHANGED)
 
-        # 圖像處理邏輯
-        processed_image = process_image(image)
+        # 圖像處理邏輯，將姓名傳入 process_image
+        # 假設你要在「姓名」前後做一些處理，例如 user_name.strip()
+        processed_image = process_image(image, user_name.strip())
 
         # 將處理後的圖片儲存
         result_path = os.path.join(RESULT_FOLDER, 'result.png')

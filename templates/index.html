@@ -9,10 +9,18 @@
 <body>
     <h1>人頭提取工具</h1>
     <form id="uploadForm" enctype="multipart/form-data" method="post">
+        <!-- 圖片檔案上傳 -->
         <input type="file" id="imageInput" name="image" accept="image/*" required>
         <br><br>
+
+        <!-- 姓名輸入框 -->
+        <label for="nameInput">請輸入姓名：</label>
+        <input type="text" id="nameInput" name="name" placeholder="例如：小明" required>
+        <br><br>
+
         <button type="submit">上傳並處理</button>
     </form>
+
     <div id="result"></div>
     <a id="download-btn" href="#" download="result.png">下載處理後的圖片</a>
 

@@ -10,7 +10,12 @@ document.getElementById('uploadForm').addEventListener('submit', async (e) => {
 
     const formData = new FormData();
     const fileInput = document.getElementById('imageInput');
+    const nameInput = document.getElementById('nameInput');
+
+    // 1) 追加圖片
     formData.append('image', fileInput.files[0]);
+    // 2) 追加姓名
+    formData.append('name', nameInput.value);
 
     const xhr = new XMLHttpRequest();
     xhr.open('POST', '/process', true);
