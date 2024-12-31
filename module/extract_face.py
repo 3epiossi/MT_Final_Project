@@ -47,7 +47,7 @@ def extract_face(image):
         image_bgra[:, :, 3] = (mask * 255).astype(np.uint8)
 
         # 保存處理後的圖片
-        cv2.imwrite("person_only_with_alpha.png", image_bgra)
+        # cv2.imwrite("person_only_with_alpha.png", image_bgra)
 
         # 步驟 2: 檢測面部特徵點
         results_mesh = face_mesh.process(image_rgb)
@@ -75,7 +75,7 @@ def extract_face(image):
             cropped_face = image_bgra[top_y:bottom_y, left_x:right_x]
 
             # 返回裁切後的結果
-            cv2.imwrite("face_only_with_alpha_cropped.png", cropped_face)
+            # cv2.imwrite("face_only_with_alpha_cropped.png", cropped_face)
             return cropped_face
 
         else:

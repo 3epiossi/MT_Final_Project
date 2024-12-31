@@ -17,14 +17,6 @@ def classify_red_and_skin(image):
     # 分離 BGRA 通道
     bgr = image[:, :, :3]   # 提取 BGR 通道
     alpha = image[:, :, 3]  # 提取 Alpha 通道
-    try:
-        for i, x in enumerate(alpha):
-            for j, y in enumerate(x):
-                if y != 0 and y != 255:
-                    print(i, j, y)
-    except Exception as e:
-        with open("error.txt", "w") as f:
-            f.write(str(e))
     
     # 轉換為灰階 (僅處理 BGR 部分)
     gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
