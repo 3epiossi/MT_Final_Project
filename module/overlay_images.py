@@ -19,7 +19,7 @@ PERSON_HEIGHT = 700
 PADDING = 30
 
 SC_FONT_URL = "https://github.com/notofonts/noto-cjk/raw/refs/heads/main/Serif/OTF/SimplifiedChinese/NotoSerifCJKsc-Medium.otf"
-FONT_SIZE = 150
+FONT_SIZE = 130
 
 def load_font_from_url(url, font_size=60):
     """
@@ -137,7 +137,10 @@ def overlay_text(image, font, text=""):
     text_color = (255, 0, 0)  # 紅色 (注意是 PIL 的 RGB)
 
     # 4) 計算文字繪製位置，實現左右、上下置中
-    text_width, text_height = draw.textsize(text, font=font)
+    # text_width, text_height = draw.textsize(text, font=font)
+    text_height = FONT_SIZE
+    text_width = draw.textlength(text, font)
+
     text_x = (image.shape[1] - text_width) // 2
     # 記得 PIL 繪製文字的 (x,y) 是文字左上角，不是左下角
     text_y = (region_center_y - text_height // 2)
