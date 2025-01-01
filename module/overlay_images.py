@@ -19,7 +19,7 @@ PERSON_HEIGHT = 700
 PADDING = 30
 
 SC_FONT_URL = "https://github.com/notofonts/noto-cjk/raw/refs/heads/main/Serif/OTF/SimplifiedChinese/NotoSerifCJKsc-Medium.otf"
-FONT_SIZE = 130
+FONT_SIZE = 120
 
 def load_font_from_url(url, font_size=60):
     """
@@ -124,7 +124,7 @@ def overlay_text(image, font, text=""):
     我們要在 y=830~1080 區域內，將文字上下左右置中顯示。
     """
     region_top = PADDING + BACKGROUND_HEIGHT
-    region_bottom = IMAGE_HEIGHT - PADDING
+    region_bottom = IMAGE_HEIGHT
     region_center_y = (region_top + region_bottom) // 2  # 955
 
     # 1) 先將 OpenCV 影像 (BGR) → PIL Image (RGB)
@@ -136,23 +136,19 @@ def overlay_text(image, font, text=""):
     # 3) 設定顏色 (RGB)
     text_color = (255, 0, 0)  # 紅色 (注意是 PIL 的 RGB)
 
-    # 4) 計算文字繪製位置，實現左右、上下置中
-    # text_width, text_height = draw.textsize(text, font=font)
-    text_height = FONT_SIZE
-    text_width = draw.textlength(text, font)
+    # 4) 計算文字繪製中心，實現左右、上下置中直接將
+    cx = image.shape[1] // 2
+    cy = region_center_y
 
-    text_x = (image.shape[1] - text_width) // 2
-    # 記得 PIL 繪製文字的 (x,y) 是文字左上角，不是左下角
-    text_y = (region_center_y - text_height // 2)
-
-    # 5) 開始繪製文字
+    # 5) 開始繪製文字，使用 anchor='mm'，使 (cx, cy) 成為文字的中央
     draw.text(
-        (text_x, text_y), 
-        text, 
-        font=font, 
+        (cx, cy),
+        text,
+        font=font,
         fill=text_color,
-        stroke_width=1,               # 外框(描邊)寬度，可自行調整
-        stroke_fill=text_color        # 若要整體更粗，就用同色
+        anchor='mm',       # 中心點為基準
+        stroke_width=1,
+        stroke_fill=text_color
     )
 
     # 7) 再把 PIL Image (RGB) → OpenCV (BGR)
